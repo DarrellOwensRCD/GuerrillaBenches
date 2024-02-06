@@ -32,9 +32,8 @@ for i,row in enumerate(values):
         if row[1] == '':
             # No address indicates its unfilled; benches have pre-assigned ids so cant be used as terminus
             break
-            if row[0] in benches_mapped and row[15] == "TRUE" or row[0] not in benches_mapped:
-                if row[0] in benches_mapped and row[15] == "TRUE":
-                # Erase outdated data and update shapefile
+        if row[0] in benches_mapped and row[15] == "TRUE" or row[0] not in benches_mapped:
+            if row[0] in benches_mapped and row[15] == "TRUE":
                 for bench in benches['features']:
                     if bench['properties']['id'] == row[0]:
                         del bench
@@ -42,27 +41,27 @@ for i,row in enumerate(values):
                         cell = 'P' + str(i + 1)
                         worksheet.update(cell, "")
                         print(f"Bench {i - 1} Updated")'''
-                        coordinates = row[4].split(",")
-                        x = {"type": "Feature",
-                        "properties" :
-                        {"id": row[0],
-                        "address": row[1],
-                        "stopid" : row[2],
-                        "city": row[3],
-                        "lines": row[5],
-                        "dirs": row[6],
-                        "length": row[7],
-                        "service_date": row[9],
-                        "status": row[10]
-                        },
-                        "geometry": {
-                        "type": "Point",
-                        "coordinates": [float(coordinates[1]), float(coordinates[0])]
-                        }
-                        }
-                        benches['features'].append(x)
-            with open('benches.geojson', 'w') as f:
-                json.dump(benches,f)
-                f.close()
+            coordinates = row[4].split(",")
+            x = {"type": "Feature",
+            "properties" :
+            {"id": row[0],
+            "address": row[1],
+            "stopid" : row[2],
+            "city": row[3],
+            "lines": row[5],
+            "dirs": row[6],
+            "length": row[7],
+            "service_date": row[9],
+            "status": row[10]
+            },
+            "geometry": {
+            "type": "Point",
+            "coordinates": [float(coordinates[1]), float(coordinates[0])]
+            }
+            }
+            benches['features'].append(x)
+with open('benches.geojson', 'w') as f:
+    json.dump(benches,f)
+    f.close()
 
                 

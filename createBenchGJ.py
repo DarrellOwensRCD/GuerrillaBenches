@@ -61,7 +61,6 @@ for i,row in enumerate(values):
                         }
                         }
                         benches['features'].append(x)
-            # Inform Google Sheet the Bench has been updated in shapefile by unmarking TRUE
             with open('benches.geojson', 'w') as f:
                 json.dump(benches,f)
                 f.close()

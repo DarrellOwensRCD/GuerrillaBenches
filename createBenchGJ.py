@@ -24,8 +24,8 @@ if os.path.exists('benches.geojson'):
     # Knows what benches are already mapped for when we checked for updates on existing benches
     for bench in benches['features']:
         benches_mapped.append(bench['properties']['id'])
-    else:
-        benches = json.loads("""{"type":"FeatureCollection","features":[]}""")
+else:
+    benches = json.loads("""{"type":"FeatureCollection","features":[]}""")
 # Iterate Sheet and Update Benches or 
 for i,row in enumerate(values):
     if i != 0: # Skip header row

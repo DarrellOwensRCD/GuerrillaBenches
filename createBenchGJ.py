@@ -4,6 +4,7 @@ from the online sheet
 import os
 import gspread
 import json
+import pandas as pd
 from google_auth_oauthlib.flow import InstalledAppFlow
 # Sheets and Google API are scope of use
 scope = ['https://www.googleapis.com/auth/spreadsheets']
@@ -28,36 +29,40 @@ else:
     benches = json.loads("""{"type":"FeatureCollection","features":[]}""")
 # Iterate Sheet and Update Benches or 
 for i,row in enumerate(values):
+    #print(row)
     if i != 0: # Skip header row
         if row[1] == '':
             # No address indicates its unfilled; benches have pre-assigned ids so cant be used as terminus
             break
-        if row[0] in benches_mapped and row[15] == "TRUE" or row[0] not in benches_mapped:
-            if row[0] in benches_mapped and row[15] == "TRUE":
-                for bench in benches['features']:
-                    if bench['properties']['id'] == row[0]:
-                        del bench
-                        '''update to sheets not working:
-                        cell = 'P' + str(i + 1)
-                        worksheet.update(cell, "")
-                        print(f"Bench {i - 1} Updated")'''
-            coordinates = row[4].split(",")
+        if row[0] in benches_mapped and row[16] == "TRUE":
+            print(row[0])
+            for i, bench in enumerate(benches['features']):
+                if row[0] == bench['properties']['id']:
+                    print("FOUND")
+                    del benches['features'][i]
+                    benches_mapped.remove(row[0])
+        if row[0] not in benches_mapped:
+            print(row)
+            coordinates = row[7].split(",")
+            print(coordinates)
             x = {"type": "Feature",
-            "properties" :
-            {"id": row[0],
-            "address": row[1],
-            "stopid" : row[2],
-            "city": row[3],
-            "lines": row[5],
-            "dirs": row[6],
-            "length": row[7],
-            "service_date": row[9],
-            "status": row[10]
-            },
-            "geometry": {
-            "type": "Point",
-            "coordinates": [float(coordinates[1]), float(coordinates[0])]
-            }
+                "properties" :
+                {"id": row[0],
+                "address": row[2],
+                "stopid" : row[1],
+                "install_date" : row[3],
+                "removed_date" : row[5],
+                "city" : row[6],
+                "lines" : row[8].split(","),
+                "ridership" : row[9],
+                "dirs" : row[10].split(","),
+                "bench_length" : row[11],
+                "adopted" : row[18],
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [float(coordinates[1]), float(coordinates[0])]
+                }
             }
             benches['features'].append(x)
 with open('benches.geojson', 'w') as f:
